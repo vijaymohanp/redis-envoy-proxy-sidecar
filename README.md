@@ -1,13 +1,13 @@
 # redis-envoy-proxy-sidecar
 This is a public repository that's for anyone can use to understand up how the envoy proxy configuration looks for a sidecar container to propagate redis replication into multi regional cluster 
 
-# Envoy Proxy Configuration
+## Envoy Proxy Configuration
 
 Replace templated section (example: `address: <US CENTRAL REDIS CLUSTER IP>` ) with actual ip address of your regional redis cluster envoy-proxy yaml 
 
-# Listener Configuration
+## Listener Configuration
 
-``
+```
 - name: redis_listener
   address:
     socket_address:
@@ -28,4 +28,4 @@ Replace templated section (example: `address: <US CENTRAL REDIS CLUSTER IP>` ) w
             request_mirror_policy:
               cluster: us_east1_local
               exclude_read_commands: true
-      ``
+      ```
