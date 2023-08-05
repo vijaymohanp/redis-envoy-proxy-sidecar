@@ -1,0 +1,231 @@
+static_resources:
+listeners:
+- name: redis_listener
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 6379
+  filter_chains:
+  - filters:
+    - name: envoy.filters.network.redis_proxy
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.filters.network.redis_proxy.v3.RedisProxy
+        stat_prefix: redis_proxy
+        settings:
+          op_timeout: 10s
+          enable_redirection: false
+        prefix_routes:
+          catch_all_route:
+            cluster: us_central1
+            request_mirror_policy:
+              cluster: us_east1_local
+              exclude_read_commands: true
+​
+- name: redis_listener_2
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 10002
+  filter_chains:
+  - filters:
+    - name: envoy.filters.network.redis_proxy
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.filters.network.redis_proxy.v3.RedisProxy
+        stat_prefix: redis_proxy
+        settings:
+          op_timeout: 10s
+          enable_redirection: false
+        prefix_routes:
+          catch_all_route:
+            cluster: us_east1
+            request_mirror_policy:
+              cluster: us_west1_local
+              exclude_read_commands: true
+​
+- name: redis_listener_3
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 10003
+  filter_chains:
+  - filters:
+    - name: envoy.filters.network.redis_proxy
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.filters.network.redis_proxy.v3.RedisProxy
+        stat_prefix: redis_proxy
+        settings:
+          op_timeout: 10s
+          enable_redirection: false
+        prefix_routes:
+          catch_all_route:
+            cluster: us_west1
+            request_mirror_policy:
+              cluster: europe_west2_local
+              exclude_read_commands: true
+​
+- name: redis_listener_4
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 10004
+  filter_chains:
+  - filters:
+    - name: envoy.filters.network.redis_proxy
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.filters.network.redis_proxy.v3.RedisProxy
+        stat_prefix: redis_proxy
+        settings:
+          op_timeout: 10s
+          enable_redirection: false
+        prefix_routes:
+          catch_all_route:
+            cluster: europe_west2
+            request_mirror_policy:
+              cluster: asia_east1_local
+              exclude_read_commands: false
+​
+- name: redis_listener_5
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 10005
+  filter_chains:
+  - filters:
+    - name: envoy.filters.network.redis_proxy
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.filters.network.redis_proxy.v3.RedisProxy
+        stat_prefix: redis_proxy
+        settings:
+          op_timeout: 10s
+          enable_redirection: false
+        prefix_routes:
+          catch_all_route:
+            cluster: asia_east1
+​
+clusters:
+- name: us_central1
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: us_central1
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: <US CENTRAL REDIS CLUSTER IP>
+              port_value: 6379            
+- name: us_east1
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: us_east1
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: <US EAST REDIS CLUSTER IP>
+              port_value: 6379         
+- name: us_west1
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: 	us_west1
+    endpoints:
+    - lb_endpoints:          
+      - endpoint:
+          address:
+            socket_address:
+              address: <US WEST REDIS CLUSTER IP>
+              port_value: 6379                
+- name: europe_west2
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: 	europe_west2
+    endpoints:
+    - lb_endpoints:          
+      - endpoint:
+          address:
+            socket_address:
+              address: <EUROPE REDIS CLUSTER IP>
+              port_value: 6379
+- name: asia_east1
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: asia_east1
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: <ASIA REDIS CLUSTER IP>
+              port_value: 6379                    
+- name: us_east1_local
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: us_east1
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 10002
+- name: us_west1_local
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: 	us_west1_local
+    endpoints:
+    - lb_endpoints:          
+      - endpoint:
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 10003
+- name: europe_west2_local
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: europe_west2_local
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 10004
+- name: asia_east1_local
+  connect_timeout: 10s
+  type: static
+  dns_lookup_family: V4_ONLY
+  lb_policy: RANDOM
+  load_assignment:
+    cluster_name: asia_east1_local
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 10005 
