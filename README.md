@@ -7,7 +7,8 @@ Replace templated section (example: `address: <US CENTRAL REDIS CLUSTER IP>` ) w
 
 # Listener Configuration
 
-`- name: redis_listener
+``
+- name: redis_listener
   address:
     socket_address:
       address: 0.0.0.0
@@ -26,4 +27,5 @@ Replace templated section (example: `address: <US CENTRAL REDIS CLUSTER IP>` ) w
             cluster: us_central1
             request_mirror_policy:
               cluster: us_east1_local
-              exclude_read_commands: true`
+              exclude_read_commands: true
+      ``
