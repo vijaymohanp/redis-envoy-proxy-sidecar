@@ -3,4 +3,4 @@ This is a public repository that's for anyone can use to understand up how the e
 
 # Envoy Proxy Configuration
 
-Replace templated section ==  address: <US CENTRAL REDIS CLUSTER IP> == with actual ip address of your regional redis cluster envoy-proxy yaml 
+Replace templated section ( ==  address: US CENTRAL REDIS CLUSTER IP == ) with actual ip address of your regional redis cluster envoy-proxy yaml 
